@@ -1,28 +1,35 @@
 {
-  "name": "organize-my-business",
-  "version": "1.0.0",
+  "name": "bussiness-org",
   "description": "",
+  "version": "1.0.0",
   "main": "server.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+  "directories": {
+    "lib": "lib"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "scripts": {
+    "start": "node server.js",
+    "test": "jest"
+  },
   "dependencies": {
     "console.table": "^0.10.0",
+    "chalk": "^2.4.1",
     "express": "^4.18.2",
     "inquirer": "^8.2.5",
     "mysql2": "^3.1.2"
   },
+  "devDependencies": {
+    "jest": "^29.3.1"
+  },
+  "author": "",
+  "license": "ISC",
+
+  "keywords": [],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MadelineLowes/organize-my-business.git"
+    "url": "git+https://github.com/MadelineLowes/bussiness-org.git"
   },
   "bugs": {
-    "url": "https://github.com/MadelineLowes/organize-my-business/issues"
+    "url": "https://github.com/MadelineLowes/bussiness-org/issues"
   },
-  "homepage": "https://github.com/MadelineLowes/organize-my-business#readme",
-  "devDependencies": {}
+  "homepage": "https://github.com/MadelineLowes/bussiness-org#readme"
 }
