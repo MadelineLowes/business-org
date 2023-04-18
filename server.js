@@ -2,10 +2,10 @@ const express = require('express');
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
 
-const Employee = require("./lib/employee");
-const Manager = require("./lib/manager");
-const Engineer = require("./lib/engineer");
-const Intern = require("./lib/intern");
+// const Employee = require("./lib/employee");
+// const Manager = require("./lib/manager");
+// const Engineer = require("./lib/engineer");
+// const Intern = require("./lib/intern");
 const { writeToHTML } = require('./lib/generatehtml');
 
 const cTable = require('console.table');
@@ -39,7 +39,7 @@ function start() {
             message: 'What would you like to do?',
             type: 'list',
             name: "choice",
-            choices: ["View all departments", "View all roles", "View all employees", "View employees by manager", "View employees by department", "Add department", "Add role", "Add employee", "Update employee's role", "Update employee's manager", "Delete employee", "Quit"]
+            choices: ["View all departments", "View all roles", "View all employees", "View employees by manager", "View employees by department", "View in browser", "Add department", "Add role", "Add employee", "Update employee's role", "Update employee's manager", "Delete employee", "Quit"]
         }
     ]).then((answerObj) => {
         switch (answerObj.choice) {
@@ -224,28 +224,32 @@ function viewEmpByDept() {
 
 // new function
 async function viewInBrowser() {
+    console.log("you made it to the first line")
     const businessList = [];
     const deptList = [];
     const roleList = [];
     const empList = [];
 
-    // WHERE DO I USE AWAIT??
     // view by dept
     function viewByDept() {
         const sqlDept = 'SELECT department.id, department.dep_name AS department FROM department';
         db.query(sqlDept, function (err, results) {
             if (err) {
+                console.log("you made it to the IF statement");
                 throw err;
             } else if (results.length < 1) {
                 // checking if there are any results
                 // do something
+                console.log("you made it to the IF else statement");
             } else {
                 // checking if there are any results
                 // if there are, add to deptList array
                 for (i = 0; i < results.length; i++) {
                     deptList.push(results[i]);
                 }
-                return deptList;
+                console.log("you made it to the dept's else statement");
+                businessList.push(deptList);
+                // console.log(businessList);
             }
         });
     }
@@ -256,23 +260,24 @@ async function viewInBrowser() {
         const sqlRole = 'SELECT role.id, role.title, department.dep_name AS department, role.salary FROM role LEFT JOIN department ON role.department_id = department.id';
         db.query(sqlRole, function (err, results) {
             if (err) {
+                console.log("you made it to the role's IF statement");
                 throw err;
             } else if (results.length < 1) {
                 // checking if there are any results
                 // do something
+                console.log("you made it to the role's IF else statement");
             } else {
                 // checking if there are any results
                 // if there are, add to deptList array
                 for (i = 0; i < results.length; i++) {
                     roleList.push(results[i]);
                 }
-                return roleList;
+                console.log("you made it to the role's else statement");
+                businessList.push(roleList);
+                // console.log(businessList);
             }
         });
-
-
     }
-   
     // 
 
     // view by employee
@@ -280,35 +285,45 @@ async function viewInBrowser() {
         const sqlEmp = 'SELECT employee.id, employee.first_name AS first, employee.last_name AS last, role.title, department.dep_name AS department, role.salary, manager.first_name AS manager FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id LEFT JOIN employee manager ON manager.id = employee.manager_id';
         db.query(sqlEmp, function (err, results) {
             if (err) {
+                console.log("you made it to the emp's IF statement");
                 throw err;
             } else if (results.length < 1) {
                 // checking if there are any results
                 // do something
+                console.log("you made it to the emp's IF else statement");
+
             } else {
                 // checking if there are any results
                 // if there are, add to deptList array
                 for (i = 0; i < results.length; i++) {
                     empList.push(results[i]);
                 }
-                return empList;
+                console.log("you made it to the emp's else statement");
+                businessList.push(empList);
+                // console.log(businessList);
             }
         });
     }
     // 
+    function writeToFile() {
+        writeToHTML(businessList);
+    }
 
     // call functions above to get returned lists 
     viewByDept();
     viewByRole();
     viewByEmp();
+    writeToFile();
     // confirming that the arrays are being returned with data
-    console.log(deptList);
-    console.log(roleList);
-    console.log(empList);
+    // console.log(deptList);
+    // console.log(roleList);
+    // console.log(empList);
     // if so, i want to push the lists to businessList and then writeToHTML(businessList)
 
     // writeToHTML(employeeList);
+    // console.log("you can now view your company's data in the browser")
     // start();
-}
+};
 
 // 
 
