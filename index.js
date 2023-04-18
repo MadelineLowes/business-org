@@ -1,12 +1,12 @@
-const inquirer = require('inquirer');
+// const inquirer = require('inquirer');
 
-const Employee = require("./lib/employee");
-const Manager = require("./lib/manager");
-const Engineer = require("./lib/engineer");
-const Intern = require("./lib/intern");
-const { writeToHTML } = require('./lib/generatehtml');
+// const Employee = require("./lib/employee");
+// const Manager = require("./lib/manager");
+// const Engineer = require("./lib/engineer");
+// const Intern = require("./lib/intern");
+// const { writeToHTML } = require('./lib/generatehtml');
 
-// create an empty arrays to store the employee objects
+// create an empty array to store the employee objects
 const employeeList = [];
 const addEmployee = async () => {
     if (employeeList.length < 1) {

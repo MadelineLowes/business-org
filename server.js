@@ -2,6 +2,12 @@ const express = require('express');
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
 
+const Employee = require("./lib/employee");
+const Manager = require("./lib/manager");
+const Engineer = require("./lib/engineer");
+const Intern = require("./lib/intern");
+const { writeToHTML } = require('./lib/generatehtml');
+
 const cTable = require('console.table');
 
 const PORT = process.env.PORT || 3001;
@@ -52,6 +58,11 @@ function start() {
             case "View employees by department":
                 viewEmpByDept();
                 break;
+            // view in browser option will generate html page where you can only see one option at a time
+            case "View in browser":
+                viewInBrowser();
+                break;
+            // 
             case "Add department":
                 addDept();
                 break;
@@ -119,7 +130,7 @@ function viewEmp() {
 };
 
 function viewEmpByMan() {
-     // query to allow users to select manager in inquirer.prompt
+    // query to allow users to select manager in inquirer.prompt
     const sql = 'SELECT employee.id, employee.first_name AS first, employee.last_name AS last FROM employee';
     db.query(sql, function (err, results) {
         if (err) throw err;
@@ -165,7 +176,7 @@ function viewEmpByMan() {
 };
 
 function viewEmpByDept() {
-     // query to allow users to select department in inquirer.prompt
+    // query to allow users to select department in inquirer.prompt
     const sql = 'SELECT department.id, department.dep_name AS department FROM department';
     db.query(sql, function (err, results) {
         if (err) throw err;
@@ -211,6 +222,99 @@ function viewEmpByDept() {
     })
 };
 
+// new function
+async function viewInBrowser() {
+    const businessList = [];
+    const deptList = [];
+    const roleList = [];
+    const empList = [];
+
+    // WHERE DO I USE AWAIT??
+    // view by dept
+    function viewByDept() {
+        const sqlDept = 'SELECT department.id, department.dep_name AS department FROM department';
+        db.query(sqlDept, function (err, results) {
+            if (err) {
+                throw err;
+            } else if (results.length < 1) {
+                // checking if there are any results
+                // do something
+            } else {
+                // checking if there are any results
+                // if there are, add to deptList array
+                for (i = 0; i < results.length; i++) {
+                    deptList.push(results[i]);
+                }
+                return deptList;
+            }
+        });
+    }
+    // 
+
+    // view by role
+    function viewByRole() {
+        const sqlRole = 'SELECT role.id, role.title, department.dep_name AS department, role.salary FROM role LEFT JOIN department ON role.department_id = department.id';
+        db.query(sqlRole, function (err, results) {
+            if (err) {
+                throw err;
+            } else if (results.length < 1) {
+                // checking if there are any results
+                // do something
+            } else {
+                // checking if there are any results
+                // if there are, add to deptList array
+                for (i = 0; i < results.length; i++) {
+                    roleList.push(results[i]);
+                }
+                return roleList;
+            }
+        });
+
+
+    }
+   
+    // 
+
+    // view by employee
+    function viewByEmp() {
+        const sqlEmp = 'SELECT employee.id, employee.first_name AS first, employee.last_name AS last, role.title, department.dep_name AS department, role.salary, manager.first_name AS manager FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id LEFT JOIN employee manager ON manager.id = employee.manager_id';
+        db.query(sqlEmp, function (err, results) {
+            if (err) {
+                throw err;
+            } else if (results.length < 1) {
+                // checking if there are any results
+                // do something
+            } else {
+                // checking if there are any results
+                // if there are, add to deptList array
+                for (i = 0; i < results.length; i++) {
+                    empList.push(results[i]);
+                }
+                return empList;
+            }
+        });
+    }
+    // 
+
+    // call functions above to get returned lists 
+    viewByDept();
+    viewByRole();
+    viewByEmp();
+    // confirming that the arrays are being returned with data
+    console.log(deptList);
+    console.log(roleList);
+    console.log(empList);
+    // if so, i want to push the lists to businessList and then writeToHTML(businessList)
+
+    // writeToHTML(employeeList);
+    // start();
+}
+
+// 
+
+
+
+
 // ADD
 function addDept() {
     inquirer.prompt([
@@ -248,7 +352,7 @@ function addRole() {
             })
         }
         // option added in case the role doesn't have a department yet
-        deptChoices.push({ name: 'TBD', value: null});
+        deptChoices.push({ name: 'TBD', value: null });
         inquirer.prompt([
             {
                 message: 'What is the title of the role?',
@@ -272,8 +376,8 @@ function addRole() {
                         return false;
                     } else if (!isNaN(salary)) {
                         return true;
-                    } 
-                } 
+                    }
+                }
             }
         ]).then((answerObj) => {
             if (answerObj.title == '') {
