@@ -1,7 +1,7 @@
 .team-heading {
-    background-color: lightcyan;
+    /* background-color: lightcyan; */
     border: 4px solid slategray;
-    border-radius: 20px;
+    /* border-radius: 20px; */
     width: 100%;
     margin: 15px 5px 10px;
 }
@@ -13,33 +13,10 @@ h1 {
     margin: 40px;
 }
 
-.employee-card {
-    margin: 10px;
-    border: 2px solid slategray;
-}
-
-.card-header {
-    background-color: lightcyan;
-    border: 1px solid slategray;
-}
-
-h2 {
-    font-weight: bolder;
+.button {
     color: slategray;
-}
-
-h3 {
-    font-style: italic;
-    color: slategray;
-}
-
-.card-body {
-    border: 1px solid slategray;
-}
-
-.list-group-item {
-    border: 1px dotted slategray;
-    color: slategray;
+    border: 3px solid slategray;
+    border-radius: 0;
 }
 
 .hide {

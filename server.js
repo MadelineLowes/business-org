@@ -39,7 +39,7 @@ function start() {
             message: 'What would you like to do?',
             type: 'list',
             name: "choice",
-            choices: ["View all departments", "View all roles", "View all employees", "View employees by manager", "View employees by department", "View in browser", "Add department", "Add role", "Add employee", "Update employee's role", "Update employee's manager", "Delete employee", "Quit"]
+            choices: ["View in browser", "View all departments", "View all roles", "View all employees", "View employees by manager", "View employees by department", "Add department", "Add role", "Add employee", "Update employee's role", "Update employee's manager", "Delete employee", "Quit"]
         }
     ]).then((answerObj) => {
         switch (answerObj.choice) {
@@ -224,7 +224,7 @@ function viewEmpByDept() {
 
 // new function
 async function viewInBrowser() {
-    console.log("you made it to the first line")
+    // console.log("you made it to the first line")
     const businessList = [];
     const deptList = [];
     const roleList = [];
@@ -247,7 +247,7 @@ async function viewInBrowser() {
                 for (i = 0; i < results.length; i++) {
                     deptList.push(results[i]);
                 }
-                console.log("you made it to the dept's else statement");
+                // console.log("you made it to the dept's else statement");
                 businessList.push(deptList);
                 // console.log(businessList);
             }
@@ -272,7 +272,7 @@ async function viewInBrowser() {
                 for (i = 0; i < results.length; i++) {
                     roleList.push(results[i]);
                 }
-                console.log("you made it to the role's else statement");
+                // console.log("you made it to the role's else statement");
                 businessList.push(roleList);
                 // console.log(businessList);
             }
@@ -298,13 +298,17 @@ async function viewInBrowser() {
                 for (i = 0; i < results.length; i++) {
                     empList.push(results[i]);
                 }
-                console.log("you made it to the emp's else statement");
+                // console.log("you made it to the emp's else statement");
                 businessList.push(empList);
                 // console.log(businessList);
+                // call function to generate the HTML file only once businessList has been populated
+                writeToFile();
+
             }
         });
     }
     // 
+
     function writeToFile() {
         writeToHTML(businessList);
     }
@@ -313,7 +317,6 @@ async function viewInBrowser() {
     viewByDept();
     viewByRole();
     viewByEmp();
-    writeToFile();
     // confirming that the arrays are being returned with data
     // console.log(deptList);
     // console.log(roleList);
