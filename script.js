@@ -3,6 +3,13 @@ function viewAll() {
   $("#dept-table").removeClass("hide");
   $("#role-table").removeClass("hide");
   $("#emp-table").removeClass("hide");
+  // highlight the selected button
+  $("#view-all").addClass("selected")
+  // remove highlight from other buttons
+  $("#view-dept").removeClass("selected")
+  $("#view-role").removeClass("selected")
+  $("#view-emp").removeClass("selected")
+
 }
 
 function viewDept() {
@@ -11,6 +18,13 @@ function viewDept() {
   $("#emp-table").addClass("hide");
   // unhide the question page header & card
   $("#dept-table").removeClass("hide");
+  // highlight the selected button
+  $("#view-dept").addClass("selected")
+  // remove highlight from other buttons
+  $("#view-all").removeClass("selected")
+  $("#view-role").removeClass("selected")
+  $("#view-emp").removeClass("selected")
+
 }
 
 function viewRole() {
@@ -19,6 +33,12 @@ function viewRole() {
   $("#emp-table").addClass("hide");
   // unhide the question page header & card
   $("#role-table").removeClass("hide");
+  // highlight the selected button
+  $("#view-role").addClass("selected")
+  // remove highlight from other buttons
+  $("#view-all").removeClass("selected")
+  $("#view-dept").removeClass("selected")
+  $("#view-emp").removeClass("selected")
 }
 
 function viewEmp() {
@@ -27,6 +47,12 @@ function viewEmp() {
   $("#role-table").addClass("hide");
   // unhide the question page header & card
   $("#emp-table").removeClass("hide");
+  // highlight the selected button
+  $("#view-emp").addClass("selected")
+  // remove highlight from other buttons
+  $("#view-all").removeClass("selected")
+  $("#view-dept").removeClass("selected")
+  $("#view-role").removeClass("selected")
 }
 
 $("#view-all").click(viewAll);

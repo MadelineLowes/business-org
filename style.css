@@ -1,24 +1,24 @@
-.team-heading {
-    /* background-color: lightcyan; */
-    border: 4px solid slategray;
-    /* border-radius: 20px; */
+header {
     width: 100%;
     margin: 15px 5px 10px;
+    border: 4px solid black;
 }
 
 h1 {
-    color: slategray;
     font-size: 50px;
     font-weight: bold;
-    margin: 40px;
 }
 
 .button {
-    color: slategray;
-    border: 3px solid slategray;
+    border: 3px solid black;
     border-radius: 0;
 }
 
 .hide {
     display: none;
+}
+
+.selected {
+    font-weight: bold;
+    border: 4px solid black;
 }

@@ -1,11 +1,8 @@
 const express = require('express');
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
+require('dotenv').config();
 
-// const Employee = require("./lib/employee");
-// const Manager = require("./lib/manager");
-// const Engineer = require("./lib/engineer");
-// const Intern = require("./lib/intern");
 const { writeToHTML } = require('./lib/generatehtml');
 
 const cTable = require('console.table');
@@ -22,7 +19,7 @@ const db = mysql.createConnection(
     {
         host: 'localhost',
         user: 'root',
-        password: 'luv21dance#P',
+        password: process.env.password,
         database: 'company_db'
     },
 )
@@ -43,6 +40,9 @@ function start() {
         }
     ]).then((answerObj) => {
         switch (answerObj.choice) {
+            case "View in browser":
+                viewInBrowser();
+                break;
             case "View all departments":
                 viewDept();
                 break;
@@ -58,11 +58,6 @@ function start() {
             case "View employees by department":
                 viewEmpByDept();
                 break;
-            // view in browser option will generate html page where you can only see one option at a time
-            case "View in browser":
-                viewInBrowser();
-                break;
-            // 
             case "Add department":
                 addDept();
                 break;
@@ -90,6 +85,86 @@ function start() {
 }
 
 // VIEW
+function viewInBrowser() {
+    const businessList = [];
+    const deptList = [];
+    const roleList = [];
+    const empList = [];
+
+    // view by dept
+    function viewByDept() {
+        const sqlDept = 'SELECT department.id, department.dep_name AS department FROM department';
+        db.query(sqlDept, function (err, results) {
+            if (err) {
+                throw err;
+            } else if (results.length < 1) {
+                // if there are no results, let user know and proceed to next function
+                console.log("no departments added yet");
+            } else {
+                // if there are any results, add to deptList array
+                for (i = 0; i < results.length; i++) {
+                    deptList.push(results[i]);
+                }
+                businessList.push(deptList);
+            }
+        });
+    }
+
+    // view by role
+    function viewByRole() {
+        const sqlRole = 'SELECT role.id, role.title, department.dep_name AS department, role.salary FROM role LEFT JOIN department ON role.department_id = department.id';
+        db.query(sqlRole, function (err, results) {
+            if (err) {
+                throw err;
+            } else if (results.length < 1) {
+                // if there are no results, let user know and proceed to next function
+                console.log("no roles added yet");
+            } else {
+                // if there are any results, add to roleList array
+                for (i = 0; i < results.length; i++) {
+                    roleList.push(results[i]);
+                }
+                businessList.push(roleList);
+            }
+        });
+    }
+    // 
+
+    // view by employee
+    function viewByEmp() {
+        const sqlEmp = 'SELECT employee.id, employee.first_name AS first, employee.last_name AS last, role.title, department.dep_name AS department, role.salary, manager.first_name AS manager FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id LEFT JOIN employee manager ON manager.id = employee.manager_id';
+        db.query(sqlEmp, function (err, results) {
+            if (err) {
+                throw err;
+            } else if (results.length < 1) {
+                // if there are no results, let user know and proceed to next function
+                console.log("no employees added yet");
+            } else {
+                // if there are any results, add to empList array
+                for (i = 0; i < results.length; i++) {
+                    empList.push(results[i]);
+                }
+                businessList.push(empList);
+
+                // call function to generate the HTML file only once businessList has been populated
+                writeToFile();
+
+            }
+        });
+    }
+
+    function writeToFile() {
+        writeToHTML(businessList);
+    }
+
+    // call functions above to get returned arrays 
+    viewByDept();
+    viewByRole();
+    viewByEmp();
+
+    start();
+};
+
 function viewDept() {
     const sql = 'SELECT department.id, department.dep_name AS department FROM department';
     db.query(sql, function (err, results) {
@@ -221,117 +296,6 @@ function viewEmpByDept() {
         })
     })
 };
-
-// new function
-async function viewInBrowser() {
-    // console.log("you made it to the first line")
-    const businessList = [];
-    const deptList = [];
-    const roleList = [];
-    const empList = [];
-
-    // view by dept
-    function viewByDept() {
-        const sqlDept = 'SELECT department.id, department.dep_name AS department FROM department';
-        db.query(sqlDept, function (err, results) {
-            if (err) {
-                console.log("you made it to the IF statement");
-                throw err;
-            } else if (results.length < 1) {
-                // checking if there are any results
-                // do something
-                console.log("you made it to the IF else statement");
-            } else {
-                // checking if there are any results
-                // if there are, add to deptList array
-                for (i = 0; i < results.length; i++) {
-                    deptList.push(results[i]);
-                }
-                // console.log("you made it to the dept's else statement");
-                businessList.push(deptList);
-                // console.log(businessList);
-            }
-        });
-    }
-    // 
-
-    // view by role
-    function viewByRole() {
-        const sqlRole = 'SELECT role.id, role.title, department.dep_name AS department, role.salary FROM role LEFT JOIN department ON role.department_id = department.id';
-        db.query(sqlRole, function (err, results) {
-            if (err) {
-                console.log("you made it to the role's IF statement");
-                throw err;
-            } else if (results.length < 1) {
-                // checking if there are any results
-                // do something
-                console.log("you made it to the role's IF else statement");
-            } else {
-                // checking if there are any results
-                // if there are, add to deptList array
-                for (i = 0; i < results.length; i++) {
-                    roleList.push(results[i]);
-                }
-                // console.log("you made it to the role's else statement");
-                businessList.push(roleList);
-                // console.log(businessList);
-            }
-        });
-    }
-    // 
-
-    // view by employee
-    function viewByEmp() {
-        const sqlEmp = 'SELECT employee.id, employee.first_name AS first, employee.last_name AS last, role.title, department.dep_name AS department, role.salary, manager.first_name AS manager FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id LEFT JOIN employee manager ON manager.id = employee.manager_id';
-        db.query(sqlEmp, function (err, results) {
-            if (err) {
-                console.log("you made it to the emp's IF statement");
-                throw err;
-            } else if (results.length < 1) {
-                // checking if there are any results
-                // do something
-                console.log("you made it to the emp's IF else statement");
-
-            } else {
-                // checking if there are any results
-                // if there are, add to deptList array
-                for (i = 0; i < results.length; i++) {
-                    empList.push(results[i]);
-                }
-                // console.log("you made it to the emp's else statement");
-                businessList.push(empList);
-                // console.log(businessList);
-                // call function to generate the HTML file only once businessList has been populated
-                writeToFile();
-
-            }
-        });
-    }
-    // 
-
-    function writeToFile() {
-        writeToHTML(businessList);
-    }
-
-    // call functions above to get returned lists 
-    viewByDept();
-    viewByRole();
-    viewByEmp();
-    // confirming that the arrays are being returned with data
-    // console.log(deptList);
-    // console.log(roleList);
-    // console.log(empList);
-    // if so, i want to push the lists to businessList and then writeToHTML(businessList)
-
-    // writeToHTML(employeeList);
-    // console.log("you can now view your company's data in the browser")
-    // start();
-};
-
-// 
-
-
-
 
 // ADD
 function addDept() {
